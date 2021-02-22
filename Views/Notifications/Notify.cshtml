@@ -1,0 +1,55 @@
+﻿@model EmailNotify.Models.Receiver
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Notify</h1>
+
+<h4>Fill the notification body</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Notify">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <br />
+                <label>@Html.DisplayFor(modelItem => Model.Email)</label>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Text</label>
+                <textarea rows="5" cols="50" placeholder="Insert your text" id="text"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Image</label>
+                <br />
+                <input type="file" id="image" name="imageInput" />
+                @*<span asp-validation-for="Name" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                <label>Video</label>
+                <br />
+                <input type="file" id="video" name="videoInput" />
+                @*<span asp-validation-for="Name" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                <label>Link</label>
+                <input placeholder="Paste your link" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Send" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to Send notifications</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
