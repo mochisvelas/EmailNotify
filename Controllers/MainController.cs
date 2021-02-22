@@ -12,5 +12,10 @@ namespace EmailNotify.Controllers
         {
             return View();
         }
+
+        public IActionResult Receivers()
+        {
+            return View();
+        }
     }
 }

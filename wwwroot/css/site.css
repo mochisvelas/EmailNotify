@@ -2,13 +2,29 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 nav.navbar {
-    background-color: #202225;
+    background-color: #161B22;
 }
 
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
+}
+
+h1{
+    color: white;
+}
+
+h4{
+    color: white;
+}
+
+.table{
+    color: white;
+}
+
+.row{
+    color: white;
 }
 
 html {
@@ -28,5 +44,5 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
-    background-color: #36393F;
+    background-color: #0D1117;
 }
