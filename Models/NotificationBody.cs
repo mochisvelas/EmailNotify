@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace EmailNotify.Models
 {
-    public class NotificationBodyModel
+    public class NotificationBody
     {
         public string Text { get; set; }
 
