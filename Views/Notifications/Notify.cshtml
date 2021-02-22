@@ -31,14 +31,15 @@
                 <div class="form-group">
                     <label>Image</label>
                     <br />
-                    <input asp-for="Image" type="file" id="image" name="imageInput" />
+                    <input asp-for="Image" type="file" accept="image/*" />
+                    <span asp-validation-for="Image"></span>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label>Video</label>
                     <br />
-                    <input asp-for="Video" type="file" id="video" name="videoInput" />
+                    <input asp-for="Video" type="file" id="video" name="videoInput" />-->
                     @*<span asp-validation-for="Name" class="text-danger"></span>*@
-                </div>
+                <!--</div>-->
                 <div class="form-group">
                     <label>Link</label>
                     <input asp-for="Link" placeholder="Paste your link" class="form-control" />
