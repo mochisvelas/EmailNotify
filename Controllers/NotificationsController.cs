@@ -76,7 +76,7 @@ namespace EmailNotify.Controllers
 
         public IActionResult NotifySelected()
         {
-            ViewData["checkedReceivers"] = JsonConvert.DeserializeObject<List<Receiver>>((string)TempData["checkedReceivers"]);
+            ViewBag.data = JsonConvert.DeserializeObject<List<Receiver>>((string)TempData["checkedReceivers"]);
 
             return View();
         }
