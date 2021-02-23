@@ -18,9 +18,12 @@ namespace EmailNotify.Models
 
         public string Text { get; set; }
 
+        public string ImageName { get; set; }
+
         [NotMapped]
         public IFormFile Image { get; set; }
 
+        public string VideoName { get; set; }
         [NotMapped]
         public IFormFile Video { get; set; }
 

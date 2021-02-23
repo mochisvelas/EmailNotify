@@ -51,53 +51,88 @@ namespace EmailNotify.Controllers
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Notify([Bind("Receiver, Subject, Text, Image, Video, Link")] Notification notification)
+        public async Task<IActionResult> Notify([Bind("Receiver, Subject, Text, Image, Video, Link, SentDate")] Notification notification)
         {
             if (ModelState.IsValid)
             {
                 string wwwRootPath = _hostEnvironment.WebRootPath;
+                string imagePath = "";
+                string videoPath = "";
 
                 //Image if any
-                string fileName = Path.GetFileNameWithoutExtension(notification.Image.FileName);
-                string extension = Path.GetExtension(notification.Image.FileName);
-                fileName += DateTime.Now.ToString("yymmssfff") + extension;
-                string imagePath = Path.Combine(wwwRootPath + "/Image/", fileName);
-                using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                if(notification.Image != null)
                 {
-                    await notification.Image.CopyToAsync(fileStream);
+                    string imageName = Path.GetFileNameWithoutExtension(notification.Image.FileName);
+                    string imageExtension = Path.GetExtension(notification.Image.FileName);
+                    notification.ImageName = imageName += DateTime.Now.ToString("yymmssfff") + imageExtension;
+                    imagePath = Path.Combine(wwwRootPath + "/Image/", imageName);
+                    using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                    {
+                        await notification.Image.CopyToAsync(fileStream);
+                    }
                 }
 
                 //Video if any
-                string videoPath = "";
-                //_context.Add(notification);
-                //await _context.SaveChangesAsync();
+                if (notification.Video != null)
+                {
+                    string videoName = Path.GetFileNameWithoutExtension(notification.Video.FileName);
+                    string videoExtension = Path.GetExtension(notification.Video.FileName);
+                    notification.VideoName = videoName += DateTime.Now.ToString("yymmssfff") + videoExtension;
+                    videoPath = Path.Combine(wwwRootPath + "/Video/", videoName);
+                    using (var fileStream = new FileStream(videoPath, FileMode.Create))
+                    {
+                        await notification.Video.CopyToAsync(fileStream);
+                    }
+                }
+
+                _context.Add(notification);
+                await _context.SaveChangesAsync();
 
                 SendEmail(notification.Receiver, notification.Subject, notification.Text,
-                    imagePath, fileName, videoPath, notification.Link).Wait();
+                    imagePath, videoPath, notification.Link).Wait();
 
                 return RedirectToAction(nameof(Index));
             }
             return View(notification);
         }
 
-        static async Task SendEmail(string Receiver, string Subject, string Text, string Image, string imageName, string Video, string Link)
+        static async Task SendEmail(string Receiver, string Subject, string Text, string Image, string Video, string Link)
         {
             var apiKey = System.IO.File.ReadAllText("C:\\Users\\Brenner\\vsprojects\\EmailNotify/.key.txt");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("velasquezmochis@hotmail.com", "Brenner");
             var to = new EmailAddress(Receiver);
             var subject = Subject;
-            var text = Text;
+            var body = Text;
             var html = "<a href="+ Link +">Click this!</a>";
             var message = MailHelper.CreateSingleEmail(
                 from,
                 to,
                 subject,
-                text,
+                body,
                 html);
-            var bytes = System.IO.File.ReadAllBytes(Image);
-            var file = Convert.ToBase64String(bytes);
-            message.AddAttachment(imageName, file);
+
+            byte[] bytes;
+            string file;
+            string name;
+
+            //Attach image if any
+            if(Image != "")
+            {
+                bytes = System.IO.File.ReadAllBytes(Image);
+                file = Convert.ToBase64String(bytes);
+                name = Path.GetFileName(Image);
+                message.AddAttachment(name, file);
+            }
+
+            //Attach video if any
+            if (Video != "")
+            {
+                bytes = System.IO.File.ReadAllBytes(Video);
+                file = Convert.ToBase64String(bytes);
+                name = Path.GetFileName(Video);
+                message.AddAttachment(name, file);
+            }
             var response = await client.SendEmailAsync(message);
         }
     }

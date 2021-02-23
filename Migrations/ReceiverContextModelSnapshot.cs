@@ -26,6 +26,9 @@ namespace EmailNotify.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("ImageName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Link")
                         .HasColumnType("nvarchar(max)");
 
@@ -39,6 +42,9 @@ namespace EmailNotify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VideoName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
