@@ -5,10 +5,7 @@
 }
 
 <h1>Send notifications</h1>
-
-<p>
-    <a asp-action="Create">Select</a>
-</p>
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -18,7 +15,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            <th></th>
+            <th>
+                Select
+            </th>
+            <th>
+                <a asp-action="Notify">Notify selected</a>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -33,6 +35,9 @@
                 </td>
                 <td>
                     <a asp-action="Notify" asp-route-id="@item.Id">Notify</a>
+                </td>
+                <td>
+                    <input type="checkbox">
                 </td>
             </tr>
         }
