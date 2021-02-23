@@ -56,38 +56,48 @@ namespace EmailNotify.Controllers
             if (ModelState.IsValid)
             {
                 string wwwRootPath = _hostEnvironment.WebRootPath;
-                string fileName = Path.GetFileNameWithoutExtension(notification.Image);
-                string extension = Path.GetExtension(notification.Image);
-                notification.Image = fileName = fileName + DateTime.Now.ToString("yymmssfff") + extension;
-                string path = Path.Combine(wwwRootPath + "/Image/", fileName);
-                //using (var fileStream = new FileStream(path, FileMode.Create))
-                //{
-                //    await notification.Image(fileStream);
-                //}
 
-                SendEmail(notification.Receiver, notification.Subject, notification.Text).Wait();
+                //Image if any
+                string fileName = Path.GetFileNameWithoutExtension(notification.Image.FileName);
+                string extension = Path.GetExtension(notification.Image.FileName);
+                fileName += DateTime.Now.ToString("yymmssfff") + extension;
+                string imagePath = Path.Combine(wwwRootPath + "/Image/", fileName) + extension;
+                using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await notification.Image.CopyToAsync(fileStream);
+                }
+
+                //Video if any
+                string videoPath = "";
+                _context.Add(notification);
+                await _context.SaveChangesAsync();
+
+                SendEmail(notification.Receiver, notification.Subject, notification.Text,
+                    imagePath, videoPath, notification.Link).Wait();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(notification);
         }
 
-        static async Task SendEmail(string Receiver, string Subject, string Text)
+        static async Task SendEmail(string Receiver, string Subject, string Text, string Image, string Video, string Link)
         {
             var apiKey = "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";
-            //var apiKey = Environment.GetEnvironmentVariable("SENGRID_API_KEY");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("velasquezmochis@hotmail.com", "Brenner");
             var to = new EmailAddress(Receiver);
             var subject = Subject;
             var text = Text;
-            var html = "";
+            var html = "<a href="+ Link +">Click this!</a>";
             var message = MailHelper.CreateSingleEmail(
                 from,
                 to,
                 subject,
                 text,
                 html);
-
+            var bytes = System.IO.File.ReadAllBytes(Image);
+            var file = Convert.ToBase64String(bytes);
+            message.AddAttachment("b.png", file);
             var response = await client.SendEmailAsync(message);
         }
     }

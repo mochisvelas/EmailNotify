@@ -14,5 +14,7 @@ namespace EmailNotify.Data
         }
 
         public DbSet<Receiver> Receiver { get; set; }
+
+        public DbSet<Notification> Notification { get; set; }
     }
 }

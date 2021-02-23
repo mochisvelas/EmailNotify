@@ -4,14 +4,16 @@ using EmailNotify.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EmailNotify.Migrations
 {
     [DbContext(typeof(ReceiverContext))]
-    partial class ReceiverContextModelSnapshot : ModelSnapshot
+    [Migration("20210223024500_NewTable")]
+    partial class NewTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,6 +28,9 @@ namespace EmailNotify.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Link")
                         .HasColumnType("nvarchar(max)");
 
@@ -39,6 +44,9 @@ namespace EmailNotify.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Video")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
