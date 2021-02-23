@@ -61,7 +61,7 @@ namespace EmailNotify.Controllers
                 string fileName = Path.GetFileNameWithoutExtension(notification.Image.FileName);
                 string extension = Path.GetExtension(notification.Image.FileName);
                 fileName += DateTime.Now.ToString("yymmssfff") + extension;
-                string imagePath = Path.Combine(wwwRootPath + "/Image/", fileName) + extension;
+                string imagePath = Path.Combine(wwwRootPath + "/Image/", fileName);
                 using (var fileStream = new FileStream(imagePath, FileMode.Create))
                 {
                     await notification.Image.CopyToAsync(fileStream);
@@ -69,20 +69,20 @@ namespace EmailNotify.Controllers
 
                 //Video if any
                 string videoPath = "";
-                _context.Add(notification);
-                await _context.SaveChangesAsync();
+                //_context.Add(notification);
+                //await _context.SaveChangesAsync();
 
                 SendEmail(notification.Receiver, notification.Subject, notification.Text,
-                    imagePath, videoPath, notification.Link).Wait();
+                    imagePath, fileName, videoPath, notification.Link).Wait();
 
                 return RedirectToAction(nameof(Index));
             }
             return View(notification);
         }
 
-        static async Task SendEmail(string Receiver, string Subject, string Text, string Image, string Video, string Link)
+        static async Task SendEmail(string Receiver, string Subject, string Text, string Image, string imageName, string Video, string Link)
         {
-            var apiKey = "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";
+            var apiKey = System.IO.File.ReadAllText("C:\\Users\\Brenner\\vsprojects\\EmailNotify/.key.txt");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("velasquezmochis@hotmail.com", "Brenner");
             var to = new EmailAddress(Receiver);
@@ -97,7 +97,7 @@ namespace EmailNotify.Controllers
                 html);
             var bytes = System.IO.File.ReadAllBytes(Image);
             var file = Convert.ToBase64String(bytes);
-            message.AddAttachment("b.png", file);
+            message.AddAttachment(imageName, file);
             var response = await client.SendEmailAsync(message);
         }
     }

@@ -30,6 +30,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+wwwroot/Image/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -350,4 +351,4 @@ MigrationBackup/
 .ionide/
 
 # secret
-.env
+.key.txt
