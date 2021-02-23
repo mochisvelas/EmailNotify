@@ -1,0 +1,69 @@
+﻿@model EmailNotify.Models.GroupedNotification
+
+@{
+    ViewData["Title"] = "Notify selected";
+}
+
+<h1>Notify selected contacts</h1>
+<p>
+    <a asp-action="Index">Back to Send notifications</a>
+</p>
+
+<h4>Fill the notification body</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="NotifySelected" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div>
+                <label>Email</label>
+                <br />
+                @foreach (var item in ViewBag.data)
+                {
+                    <label>@item</label>
+                }
+            </div>
+
+            @*<div class="form-group">
+                <label>Email</label>
+                <br />
+                <input asp-for="Receiver" value="@ViewData["Email"]" readonly class="dimTextBox" />
+            </div>*@
+            <div class="form-group">
+                <label>Subject</label>
+                <input asp-for="Subject" placeholder="Insert the subject" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label>Text</label>
+                <textarea asp-for="Text" rows="5" cols="50" placeholder="Insert your text" id="text"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Image</label>
+                <br />
+                <input asp-for="Image" type="file" accept="image/*" />
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Video</label>
+                <br />
+                <input asp-for="Video" type="file" accept="video/*" />
+                <span asp-validation-for="Video" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Link</label>
+                <input asp-for="Link" placeholder="Paste your link" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Send" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to Send notifications</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

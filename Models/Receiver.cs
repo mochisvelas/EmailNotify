@@ -12,5 +12,7 @@ namespace EmailNotify.Models
         public string Email { get; set; }
 
         public string Name { get; set; }
+
+        public bool Checked { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using SendGrid.Helpers.Mail;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace EmailNotify.Controllers
 {
@@ -28,6 +29,31 @@ namespace EmailNotify.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Receiver.ToListAsync());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(List<Receiver> selection)
+        {
+            if (selection == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var selected in selection)
+            {
+                var receiver = await _context.Receiver.FindAsync(selected.Id);
+
+                if (receiver == null)
+                {
+                    return NotFound();
+                }
+            }
+
+            //TempData["checkedReceivers"] = selection.Where(x => x.Checked).ToList();
+            TempData["checkedReceivers"] = JsonConvert.SerializeObject(selection.Where(x => x.Checked).ToList());
+
+            return RedirectToAction("NotifySelected");
         }
 
         //GET
@@ -48,6 +74,14 @@ namespace EmailNotify.Controllers
             return View();
         }
 
+        public IActionResult NotifySelected()
+        {
+            ViewData["checkedReceivers"] = JsonConvert.DeserializeObject<List<Receiver>>((string)TempData["checkedReceivers"]);
+
+            return View();
+        }
+
+
         //POST
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -58,6 +92,7 @@ namespace EmailNotify.Controllers
                 string wwwRootPath = _hostEnvironment.WebRootPath;
                 string imagePath = "";
                 string videoPath = "";
+                notification.SentDate = DateTime.Now;
 
                 //Image if any
                 if(notification.Image != null)
@@ -95,6 +130,56 @@ namespace EmailNotify.Controllers
             }
             return View(notification);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> NotifySelected([Bind("Receiver, Subject, Text, Image, Video, Link, SentDate")] Notification notification)
+        {
+            if (ModelState.IsValid)
+            {
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+                string imagePath = "";
+                string videoPath = "";
+                notification.SentDate = DateTime.Now;
+
+                //Image if any
+                if (notification.Image != null)
+                {
+                    string imageName = Path.GetFileNameWithoutExtension(notification.Image.FileName);
+                    string imageExtension = Path.GetExtension(notification.Image.FileName);
+                    notification.ImageName = imageName += DateTime.Now.ToString("yymmssfff") + imageExtension;
+                    imagePath = Path.Combine(wwwRootPath + "/Image/", imageName);
+                    using (var fileStream = new FileStream(imagePath, FileMode.Create))
+                    {
+                        await notification.Image.CopyToAsync(fileStream);
+                    }
+                }
+
+                //Video if any
+                if (notification.Video != null)
+                {
+                    string videoName = Path.GetFileNameWithoutExtension(notification.Video.FileName);
+                    string videoExtension = Path.GetExtension(notification.Video.FileName);
+                    notification.VideoName = videoName += DateTime.Now.ToString("yymmssfff") + videoExtension;
+                    videoPath = Path.Combine(wwwRootPath + "/Video/", videoName);
+                    using (var fileStream = new FileStream(videoPath, FileMode.Create))
+                    {
+                        await notification.Video.CopyToAsync(fileStream);
+                    }
+                }
+
+                _context.Add(notification);
+                await _context.SaveChangesAsync();
+
+                SendEmail(notification.Receiver, notification.Subject, notification.Text,
+                    imagePath, videoPath, notification.Link).Wait();
+
+                return RedirectToAction(nameof(Index));
+            }
+            return View(notification);
+        }
+
 
         static async Task SendEmail(string Receiver, string Subject, string Text, string Image, string Video, string Link)
         {

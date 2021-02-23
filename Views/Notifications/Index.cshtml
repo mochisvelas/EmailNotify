@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EmailNotify.Models.Receiver>
+﻿@model IList<EmailNotify.Models.Receiver>
 
 @{
     ViewData["Title"] = "Send notifications";
@@ -6,40 +6,49 @@
 
 <h1>Send notifications</h1>
 <br />
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                Select
-            </th>
-            <th>
-                <a asp-action="Notify">Notify selected</a>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@using (Html.BeginForm("Index", "Notifications", FormMethod.Post))
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    <a asp-action="Notify" asp-route-id="@item.Id">Notify</a>
-                </td>
-                <td>
-                    <input type="checkbox">
-                </td>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Select
+                </th>
+                <th>
+
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @*@foreach (var item in Model)*@
+            @for (int i = 0; i < Model.Count(); i++)
+            {
+                <tr>
+                    <td>
+                        @Html.TextBoxFor(m => Model[i].Id)
+                    </td>
+                    <td class="dimTxtBox">
+                        @Html.TextBoxFor(m => Model[i].Email)
+                    </td>
+                    <td class="dimTxtBox">
+                        @Html.TextBoxFor(m => Model[i].Name)
+                    </td>
+                    <td>
+                        <a asp-action="Notify" asp-route-id="@Model[i].Id">Notify</a>
+                    </td>
+                    <td>
+                        @Html.CheckBoxFor(c => Model[i].Checked)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <input type="submit" value="Notify selected" />
+}
