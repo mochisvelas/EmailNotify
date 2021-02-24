@@ -142,6 +142,7 @@ namespace EmailNotify.Controllers
                 string imagePath = "";
                 string videoPath = "";
                 notification.SentDate = DateTime.Now;
+                var emails = ViewBag.data;
 
                 //Image if any
                 if (notification.Image != null)

@@ -12,16 +12,19 @@
         <thead>
             <tr>
                 <th>
+
+                </th>
+                <th>
                     Email
                 </th>
                 <th>
                     Name
                 </th>
                 <th>
-                    Select
+
                 </th>
                 <th>
-
+                    Select
                 </th>
             </tr>
         </thead>
@@ -31,13 +34,16 @@
             {
                 <tr>
                     <td>
-                        @Html.TextBoxFor(m => Model[i].Id)
+                        @*@Html.HiddenFor(m => Model[i].Id)*@
+                        <input type="hidden" asp-for="@Model[i].Id" />
                     </td>
                     <td class="dimTxtBox">
-                        @Html.TextBoxFor(m => Model[i].Email)
+                        @Html.DisplayFor(m => Model[i].Email)
+                        <input type="hidden" asp-for="@Model[i].Email" />
                     </td>
                     <td class="dimTxtBox">
-                        @Html.TextBoxFor(m => Model[i].Name)
+                        @Html.DisplayFor(m => Model[i].Name)
+                        <input type="hidden" asp-for="@Model[i].Name" />
                     </td>
                     <td>
                         <a asp-action="Notify" asp-route-id="@Model[i].Id">Notify</a>

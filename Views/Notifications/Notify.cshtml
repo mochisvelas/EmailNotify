@@ -18,7 +18,9 @@
                 <div class="form-group">
                     <label>Email</label>
                     <br />
-                    <input asp-for="Receiver" value="@ViewData["Email"]" readonly class="dimTextBox"/>
+                    <label>@ViewData["Email"]</label>
+                    <input type="hidden" asp-for="Receiver" value="@ViewData["Email"]"/>
+                    @*<input asp-for="Receiver" value="@ViewData["Email"]" readonly class="dimTextBox" />*@
                 </div>
                 <div class="form-group">
                     <label>Subject</label>
