@@ -31,5 +31,25 @@ namespace EmailNotify.Models
 
         [DataType(DataType.Date)]
         public DateTime SentDate { get; set; }
+
+        public Notification(
+            string receiver,
+            string subject,
+            string text,
+            string imageName,
+            string videoName, 
+            string link,
+            DateTime dateSent)
+        {
+            Receiver = receiver;
+            Subject = subject;
+            Text = text;
+            ImageName = imageName;
+            VideoName = videoName;
+            Link = link;
+            SentDate = dateSent;
+        }
+
+        public Notification() { }
     }
 }

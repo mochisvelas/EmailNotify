@@ -77,7 +77,7 @@ namespace EmailNotify.Controllers
         public IActionResult NotifySelected()
         {
             ViewBag.data = JsonConvert.DeserializeObject<List<Receiver>>((string)TempData["checkedReceivers"]);
-
+            TempData["checkedReceivers"] = JsonConvert.SerializeObject(ViewBag.data);
             return View();
         }
 
@@ -138,11 +138,11 @@ namespace EmailNotify.Controllers
         {
             if (ModelState.IsValid)
             {
+                var receivers = JsonConvert.DeserializeObject<List<Receiver>>((string)TempData["checkedReceivers"]);
                 string wwwRootPath = _hostEnvironment.WebRootPath;
                 string imagePath = "";
                 string videoPath = "";
                 notification.SentDate = DateTime.Now;
-                var emails = ViewBag.data;
 
                 //Image if any
                 if (notification.Image != null)
@@ -169,12 +169,26 @@ namespace EmailNotify.Controllers
                         await notification.Video.CopyToAsync(fileStream);
                     }
                 }
-
-                _context.Add(notification);
-                await _context.SaveChangesAsync();
-
-                SendEmail(notification.Receiver, notification.Subject, notification.Text,
-                    imagePath, videoPath, notification.Link).Wait();
+            
+                foreach (var receiver in receivers)
+                {
+                    var newNotification = new Notification(
+                        receiver.Email,
+                        notification.Subject,
+                        notification.Text,
+                        notification.ImageName,
+                        notification.VideoName,
+                        notification.Link,
+                        notification.SentDate);                    
+                    _context.Add(newNotification);
+                    await _context.SaveChangesAsync();
+                    SendEmail(newNotification.Receiver,
+                        newNotification.Subject,
+                        newNotification.Text,
+                        imagePath,
+                        videoPath,
+                        newNotification.Link).Wait();
+                }
 
                 return RedirectToAction(nameof(Index));
             }
