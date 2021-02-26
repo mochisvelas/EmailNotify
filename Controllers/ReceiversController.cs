@@ -58,8 +58,16 @@ namespace EmailNotify.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(receiver);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    _context.Update(receiver);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException)
+                {                  
+                    return View(receiver);                    
+                    throw;                    
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(receiver);
@@ -100,16 +108,10 @@ namespace EmailNotify.Controllers
                     _context.Update(receiver);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateException)
                 {
-                    if (!ReceiverExists(receiver.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return View(receiver);
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }

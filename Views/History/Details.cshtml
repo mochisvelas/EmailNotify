@@ -22,30 +22,50 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Subject)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Text)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Text)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Image)
-        </dt>
-        <dd class="col-sm-10">
-            <img src="@("~/image/"+Model.ImageName)" asp-append-version="true" width="250px" height="250px" />
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Video)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.VideoName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Link)
-        </dt>
-        <dd class="col-sm-10">
-            <a href="+ @Html.DisplayFor(model => model.Link) +">Click this!</a>
-        </dd>
+        @{
+            if (Model.Text != null)
+            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Text)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Text)
+                </dd>
+            }
+        }
+        @{
+            if (Model.ImageName != null)
+            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Image)
+                </dt>
+                <dd class="col-sm-10">
+                    <img src="@("~/image/"+Model.ImageName)" asp-append-version="true" width="250px" height="250px" />
+                </dd>
+            }
+        }
+        @{
+            if (Model.VideoName != null)
+            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Video)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.VideoName)
+                </dd>
+            }
+        }
+        @{
+            if (Model.Link != null)
+            {
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Link)
+                </dt>
+                <dd class="col-sm-10">
+                    <a href="+ @Html.DisplayFor(model => model.Link) +">Click this!</a>
+                </dd>
+            }
+        }
         <dt class="col-sm-2">
             Date Sent
         </dt>
