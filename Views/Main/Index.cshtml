@@ -3,5 +3,19 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">EmailNotify</h1>    
+    <h1 class="display-4">EmailNotify</h1>
+    <br />
+    <h3 class="welcome-msg">
+        Welcome to EmailNotify. To start notifying your contacts go to
+        <a asp-controller="Notifications" asp-action="Index">Send notifications</a>.     
+    </h3>
+    <h3 class="welcome-msg">
+        If you don't have any added contacts yet, go to
+        <a asp-controller="Receivers" asp-action="Index">Manage contacts</a> and add them.
+    </h3>
+    <h3 class="welcome-msg">
+        And finally, when you already have sent notifications, you will be able to check them out
+        in <a asp-controller="Receivers" asp-action="Index">Notifications history</a>.
+        Happy notifying!
+    </h3>
 </div>
