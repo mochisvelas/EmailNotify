@@ -14,6 +14,7 @@ namespace EmailNotify.Models
 
         public string Receiver { get; set; }
 
+        [Required]
         public string Subject { get; set; }
 
         public string Text { get; set; }

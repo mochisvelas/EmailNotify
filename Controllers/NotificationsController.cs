@@ -203,8 +203,8 @@ namespace EmailNotify.Controllers
             var from = new EmailAddress("velasquezmochis@hotmail.com", "Brenner");
             var to = new EmailAddress(Receiver);
             var subject = Subject;
-            var body = Text;
-            var html = "<a href="+ Link +">Click this!</a>";
+            var body = "<p>" + Text + "</p>";
+            var html = "<p>"+ Text +"</p><a href="+ Link +">Click this!</a>";
             var message = MailHelper.CreateSingleEmail(
                 from,
                 to,
